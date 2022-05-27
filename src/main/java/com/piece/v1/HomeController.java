@@ -25,6 +25,19 @@ import java.util.Arrays;
 public class HomeController implements EventHandler<Event> {
 
     @FXML
+    public static Button playing = new Button();
+    public static String clickedID = "";
+    private static final MediaView mediaView = new MediaView();
+    private static final File Songs = new File("D://MinorProject//Piece//src//Resources//Songs");
+    private static final ArrayList<File> songs = new ArrayList<File>(Arrays.asList(Songs.listFiles()));
+    private static final File Images = new File("D://MinorProject//Piece//src//Resources//Images");
+    private static final ArrayList<File> images = new ArrayList<File>(Arrays.asList(Images.listFiles()));
+    private static final ArrayList<Button> playButtons = new ArrayList<Button>();
+    private static String song = new File("D://MinorProject//Piece//src//Resources//Shivers.wav").toURI().toString();
+    protected static MediaPlayer Piece = new MediaPlayer(new Media(song));
+    private static final ArrayList<Slider> sliders = new ArrayList<Slider>();
+    private static final ArrayList<Label> durations = new ArrayList<Label>();
+    @FXML
     public Button likeB1;
     @FXML
     public Button likeB2;
@@ -36,8 +49,6 @@ public class HomeController implements EventHandler<Event> {
     public Button play2;
     @FXML
     public Button play3;
-    @FXML
-    public static Button playing = new Button();
     @FXML
     public Label duration1;
     @FXML
@@ -56,21 +67,26 @@ public class HomeController implements EventHandler<Event> {
     public Label lb2;
     @FXML
     public Label lb3;
-
-    private int i = 0;
+    private final int i = 0;
     private int j = 0;
-    private static MediaView mediaView = new MediaView();
-    private static File Songs = new File("D://MinorProject//Piece//src//Resources//Songs");
-    private static ArrayList<File> songs = new ArrayList<File>(Arrays.asList(Songs.listFiles()));
-    private static File Images = new File("D://MinorProject//Piece//src//Resources//Images");
-    private static ArrayList<File> images = new ArrayList<File>(Arrays.asList(Images.listFiles()));
-    private static ArrayList<Button> playButtons = new ArrayList<Button>();
-    private static String song = new File("D://MinorProject//Piece//src//Resources//Shivers.wav").toURI().toString();
-    protected static MediaPlayer Piece = new MediaPlayer(new Media(song));
-    public static String clickedID ="";
-    private static ArrayList<Slider> sliders = new ArrayList<Slider>();
-    private static ArrayList<Label> durations = new ArrayList<Label>();
 
+    public static String getTimeString(double millis) {
+        millis /= 1000;
+        String s = formatTime(millis % 60);
+        millis /= 60;
+        String m = formatTime(millis % 60);
+        millis /= 60;
+        String h = formatTime(millis % 24);
+        return h + ":" + m + ":" + s;
+    }
+
+    public static String formatTime(double time) {
+        int t = (int) time;
+        if (t > 9) {
+            return String.valueOf(t);
+        }
+        return "0" + t;
+    }
 
     public void homePage() throws Exception {
         Parent root = FXMLLoader.load(Main.class.getResource("Home.fxml"));
@@ -82,7 +98,6 @@ public class HomeController implements EventHandler<Event> {
         alert.setHeaderText("Welcome");
         alert.show();
     } //Transition from LOGIN screen to HOME Screen.
-
 
     public void addButtons() {
         playButtons.add(play1);
@@ -113,7 +128,7 @@ public class HomeController implements EventHandler<Event> {
 
     }
 
-    public void slider(){
+    public void slider() {
         for (int x = 0; x < playButtons.size(); x++) {
             if (playButtons.get(x).getId().equals(playing.getId())) {
                 Double time = Piece.getTotalDuration().toSeconds();
@@ -163,30 +178,12 @@ public class HomeController implements EventHandler<Event> {
         lb1.setText(Utilities.likedBy);
     }
 
-    public static String getTimeString(double millis) {
-        millis /= 1000;
-        String s = formatTime(millis % 60);
-        millis /= 60;
-        String m = formatTime(millis % 60);
-        millis /= 60;
-        String h = formatTime(millis % 24);
-        return h + ":" + m + ":" + s;
-    }
-
-    public static String formatTime(double time) {
-        int t = (int) time;
-        if (t > 9) {
-            return String.valueOf(t);
-        }
-        return "0" + t;
-    }
-
     @Override
     public void handle(Event event) {
         addButtons();
         clickedID = ((Control) event.getSource()).getId();
 
-        if(Piece.getStatus().equals(MediaPlayer.Status.READY)){
+        if (Piece.getStatus().equals(MediaPlayer.Status.READY)) {
             for (int x = 0; x < playButtons.size(); x++) {
                 if (playButtons.get(x).getId().equals(clickedID)) {
                     playing.setId(clickedID);
@@ -198,17 +195,16 @@ public class HomeController implements EventHandler<Event> {
                     Image pauseImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Pause.png");
                     ImageView pauseV = new ImageView(pauseImage);
                     if (playButtons.get(x).getId().equals(playing.getId())) {
-                            pauseV.setPreserveRatio(true);
-                            pauseV.fitWidthProperty().bind(playButtons.get(x).widthProperty());
-                            pauseV.fitHeightProperty().bind(playButtons.get(x).heightProperty());
-                            playButtons.get(x).setGraphic(pauseV);
-                        }
+                        pauseV.setPreserveRatio(true);
+                        pauseV.fitWidthProperty().bind(playButtons.get(x).widthProperty());
+                        pauseV.fitHeightProperty().bind(playButtons.get(x).heightProperty());
+                        playButtons.get(x).setGraphic(pauseV);
+                    }
                     break;
                 }
             }
-        }
-        else if(Piece.getStatus().equals(MediaPlayer.Status.PLAYING)){
-            if(playing.getId().equals(clickedID)){
+        } else if (Piece.getStatus().equals(MediaPlayer.Status.PLAYING)) {
+            if (playing.getId().equals(clickedID)) {
                 Piece.pause();
                 slider();
                 System.out.println("Music Paused!");
@@ -222,8 +218,7 @@ public class HomeController implements EventHandler<Event> {
                         playButtons.get(i).setGraphic(playV);
                     }
                 }
-            }
-            else{
+            } else {
                 Piece.stop();
                 for (int x = 0; x < playButtons.size(); x++) {
                     if (playButtons.get(x).getId().equals(clickedID)) {
@@ -245,8 +240,7 @@ public class HomeController implements EventHandler<Event> {
                     }
                 }
             }
-        }
-        else if(Piece.getStatus().equals(MediaPlayer.Status.PAUSED)){
+        } else if (Piece.getStatus().equals(MediaPlayer.Status.PAUSED)) {
             Piece.play();
             playing.setId(clickedID);
             slider();
@@ -264,8 +258,7 @@ public class HomeController implements EventHandler<Event> {
         }
 
 
-
-        }
+    }
 
 }
 

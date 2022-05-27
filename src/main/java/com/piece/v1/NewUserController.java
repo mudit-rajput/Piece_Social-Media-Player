@@ -20,15 +20,15 @@ public class NewUserController {
     @FXML
     private TextField confirmPwd;
     @FXML
-    private Utilities u = new Utilities();
+    private final Utilities u = new Utilities();
     @FXML
-    private BaseController home = new BaseController();
+    private final BaseController home = new BaseController();
 
     @FXML
     protected void newUserPage() throws Exception {
         Utilities.stage1.close();
         Parent root = FXMLLoader.load(Objects.requireNonNull(Main.class.getResource("NewUser.fxml")));
-        Utilities.stage(root,Utilities.stage1,500,300);
+        Utilities.stage(root, Utilities.stage1, 500, 300);
         System.out.println("New User page opened");
 
     }
@@ -40,14 +40,14 @@ public class NewUserController {
 
         ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT * FROM USERS");
 
-        if(newName.getText().isEmpty()||newUid.getText().isEmpty()||newPwd.getText().isEmpty()||confirmPwd.getText().isEmpty()){
+        if (newName.getText().isEmpty() || newUid.getText().isEmpty() || newPwd.getText().isEmpty() || confirmPwd.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setHeaderText("Some fields are missing!");
             alert.show();
-            flag=1;
+            flag = 1;
         }
 
-        if(flag!=1){
+        if (flag != 1) {
             while (rs.next()) {
                 u.users.add(rs.getString(2));
                 if (newUid.getText().equals(u.users.get(i))) {
@@ -62,15 +62,15 @@ public class NewUserController {
             rs.close();
         }
 
-        if (flag!=1){
-            if (newPwd.getText().equals(confirmPwd.getText())){
+        if (flag != 1) {
+            if (newPwd.getText().equals(confirmPwd.getText())) {
                 String query = "INSERT INTO USERS(NAME,USERID,PASSWORD) VALUES('" + newName.getText() + "','" + newUid.getText() + "','" + newPwd.getText() + "')";
                 Utilities.connection.createStatement().executeUpdate(query);
                 Alert created = new Alert(Alert.AlertType.INFORMATION);
                 created.setHeaderText("User Created");
                 System.out.println("New User Created");
                 created.show();
-            } else{
+            } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Passwords do not match");
@@ -83,5 +83,5 @@ public class NewUserController {
     private void loginScreen() throws Exception {
         home.logoutButton();
     }
-    }
+}
 

@@ -21,11 +21,11 @@ public class LoginController {
     @FXML
     public PasswordField pwd;
     @FXML
-    private HomeController home = new HomeController();
+    private final HomeController home = new HomeController();
     @FXML
-    private NewUserController newUser = new NewUserController();
+    private final NewUserController newUser = new NewUserController();
     @FXML
-    private Utilities u = new Utilities();
+    private final Utilities u = new Utilities();
 
     @FXML
     public void loginSystem() throws Exception {
@@ -40,7 +40,7 @@ public class LoginController {
             if (uid.getText().equals(u.users.get(i))) {
                 System.out.println("User found @ row" + (i + 1));
                 Utilities.Name = rs.getString(1);
-                Utilities.userID=rs.getInt(2);
+                Utilities.userID = rs.getInt(2);
                 System.out.println("User Name is: " + Utilities.Name);
                 if (pwd.getText().equals(u.passwords.get(i))) {
                     flag = 1;
