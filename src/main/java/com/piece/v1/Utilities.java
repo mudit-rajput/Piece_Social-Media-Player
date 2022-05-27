@@ -23,15 +23,15 @@ public class Utilities {
     protected ArrayList<String> users = new ArrayList<>();
     protected ArrayList<String> passwords = new ArrayList<>();
 
-    static public void mysqlConnection() throws Exception {
+    static public void mysqlConnection() {
 
         try {
             System.out.println("Driver loaded...");
             connection = DriverManager.getConnection(localHost, rootUser, password);
             System.out.println("Database connection established...");
 
-        } catch (SQLException exception) {
-            throw exception;
+        } catch (SQLException e) {
+            System.out.println("error" + e);
         }
     } //Establishes the connection between JAVA and MYSQL using a JDBC driver.
 
