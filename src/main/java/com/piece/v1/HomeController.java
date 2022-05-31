@@ -8,8 +8,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -26,15 +24,10 @@ public class HomeController implements EventHandler<Event> {
 
     @FXML
     public static Button playing = new Button();
-    public static String clickedID = "";
-    private static final MediaView mediaView = new MediaView();
-    private static final File Songs = new File("D://MinorProject//Piece//src//Resources//Songs");
-    private static final ArrayList<File> songs = new ArrayList<>(Arrays.asList(Songs.listFiles()));
+
     private static final File Images = new File("D://MinorProject//Piece//src//Resources//Images");
     private static final ArrayList<File> images = new ArrayList<File>(Arrays.asList(Images.listFiles()));
     private static final ArrayList<Button> playButtons = new ArrayList<>();
-    private static String song = new File("D://MinorProject//Piece//src//Resources//Shivers.wav").toURI().toString();
-    protected static MediaPlayer Piece = new MediaPlayer(new Media(song));
     private static final ArrayList<Slider> sliders = new ArrayList<>();
     private static final ArrayList<Label> durations = new ArrayList<>();
     @FXML
@@ -96,20 +89,9 @@ public class HomeController implements EventHandler<Event> {
         alert.setContentText(Utilities.Name);
         alert.setHeaderText("Welcome");
         alert.show();
+        MusicPlayerController.addSongs();
     } //Transition from LOGIN screen to HOME Screen.
 
-    public void addButtons() {
-        playButtons.add(play1);
-        playButtons.add(play2);
-        playButtons.add(play3);
-        sliders.add(s1);
-        sliders.add(s2);
-        sliders.add(s3);
-        durations.add(duration1);
-        durations.add(duration2);
-        durations.add(duration3);
-
-    }
 
     public void social() throws Exception {
         Statement stmt = Utilities.connection.createStatement();
@@ -175,88 +157,6 @@ public class HomeController implements EventHandler<Event> {
         rs.close();
         System.out.println(Utilities.likedBy);
         lb1.setText(Utilities.likedBy);
-    }
-
-    @Override
-    public void handle(Event event) {
-        addButtons();
-        clickedID = ((Control) event.getSource()).getId();
-
-        if (Piece.getStatus().equals(MediaPlayer.Status.READY)) {
-            for (int x = 0; x < playButtons.size(); x++) {
-                if (playButtons.get(x).getId().equals(clickedID)) {
-                    playing.setId(clickedID);
-                    song = new File(songs.get(x).getPath()).toURI().toString();
-                    Piece = new MediaPlayer(new Media(song));
-                    Piece.play();
-                    slider();
-                    System.out.println("Music Played!");
-                    Image pauseImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Pause.png");
-                    ImageView pauseV = new ImageView(pauseImage);
-                    if (playButtons.get(x).getId().equals(playing.getId())) {
-                        pauseV.setPreserveRatio(true);
-                        pauseV.fitWidthProperty().bind(playButtons.get(x).widthProperty());
-                        pauseV.fitHeightProperty().bind(playButtons.get(x).heightProperty());
-                        playButtons.get(x).setGraphic(pauseV);
-                    }
-                    break;
-                }
-            }
-        } else if (Piece.getStatus().equals(MediaPlayer.Status.PLAYING)) {
-            if (playing.getId().equals(clickedID)) {
-                Piece.pause();
-                slider();
-                System.out.println("Music Paused!");
-                Image playImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Play.png");
-                ImageView playV = new ImageView(playImage);
-                for (Button playButton : playButtons) {
-                    if (playButton.getId().equals(playing.getId())) {
-                        playV.setPreserveRatio(true);
-                        playV.fitWidthProperty().bind(playButton.widthProperty());
-                        playV.fitHeightProperty().bind(playButton.heightProperty());
-                        playButton.setGraphic(playV);
-                    }
-                }
-            } else {
-                Piece.stop();
-                for (int x = 0; x < playButtons.size(); x++) {
-                    if (playButtons.get(x).getId().equals(clickedID)) {
-                        playing.setId(clickedID);
-                        song = new File(songs.get(x).getPath()).toURI().toString();
-                        Piece = new MediaPlayer(new Media(song));
-                        Piece.play();
-                        slider();
-                        System.out.println("Music Played!");
-                        Image pauseImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Pause.png");
-                        ImageView pauseV = new ImageView(pauseImage);
-                        if (playButtons.get(x).getId().equals(playing.getId())) {
-                            pauseV.setPreserveRatio(true);
-                            pauseV.fitWidthProperty().bind(playButtons.get(x).widthProperty());
-                            pauseV.fitHeightProperty().bind(playButtons.get(x).heightProperty());
-                            playButtons.get(x).setGraphic(pauseV);
-                        }
-                        break;
-                    }
-                }
-            }
-        } else if (Piece.getStatus().equals(MediaPlayer.Status.PAUSED)) {
-            Piece.play();
-            playing.setId(clickedID);
-            slider();
-            System.out.println("Music Played!");
-            Image pauseImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Pause.png");
-            ImageView pauseV = new ImageView(pauseImage);
-            for (Button playButton : playButtons) {
-                if (playButton.getId().equals(playing.getId())) {
-                    pauseV.setPreserveRatio(true);
-                    pauseV.fitWidthProperty().bind(playButton.widthProperty());
-                    pauseV.fitHeightProperty().bind(playButton.heightProperty());
-                    playButton.setGraphic(pauseV);
-                }
-            }
-        }
-
-
     }
 
 }

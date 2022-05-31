@@ -44,5 +44,5 @@
             <Glow/>
         </effect>
     </Label>
-    <fx:include fx:id="Base" source="Base.fxml"/>
+    <fx:include fx:id="" source="Base.fxml"/>
 </Pane>
