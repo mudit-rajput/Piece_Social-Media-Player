@@ -157,6 +157,7 @@ public class HomeController implements EventHandler<Event> {
         rs.close();
         System.out.println(Utilities.likedBy);
         lb1.setText(Utilities.likedBy);
+        //hello
     }
 
 }
