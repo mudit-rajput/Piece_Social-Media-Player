@@ -1,26 +1,19 @@
 package com.piece.v1;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import javafx.util.Duration;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 
 import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class HomeController implements EventHandler<Event> {
+public class HomeController{
 
     @FXML
     public static Button playing = new Button();
@@ -84,12 +77,10 @@ public class HomeController implements EventHandler<Event> {
         Parent root = FXMLLoader.load(Main.class.getResource("Home.fxml"));
         Utilities.stage(root, Utilities.stage2, 1280, 800);
         System.out.println("Home screen loaded");
-
         Alert alert = new Alert(Alert.AlertType.INFORMATION);  //Shows a dialog box upon login which welcomes user.
         alert.setContentText(Utilities.Name);
         alert.setHeaderText("Welcome");
         alert.show();
-        MusicPlayerController.addSongs();
     } //Transition from LOGIN screen to HOME Screen.
 
 
@@ -108,7 +99,7 @@ public class HomeController implements EventHandler<Event> {
         }
 
     }
-
+/*
     public void slider() {
         for (int x = 0; x < playButtons.size(); x++) {
             if (playButtons.get(x).getId().equals(playing.getId())) {
@@ -157,8 +148,8 @@ public class HomeController implements EventHandler<Event> {
         rs.close();
         System.out.println(Utilities.likedBy);
         lb1.setText(Utilities.likedBy);
-        //hello
     }
 
+}*/
 }
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Utilities {
 
     static private final String localHost = "jdbc:mysql://localhost:3306/PIECE";
-    static private final String rootUser = "satwik";
+    static private final String rootUser = "root";
     static private final String password = "1234";
     static public Connection connection;
     public static String likedBy = "Liked by ";

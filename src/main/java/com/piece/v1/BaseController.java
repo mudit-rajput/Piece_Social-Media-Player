@@ -39,7 +39,7 @@ public class BaseController {
     } //Takes user to the ABOUT US screen.
 
     public void logoutButton() throws Exception {
-        HomeController.Piece.stop();
+        //HomeController.Piece.stop();
         Utilities.stage2.close();
         Utilities.stage1.close();
         System.out.println("User Logged out");

@@ -1,130 +1,98 @@
 package com.piece.v1;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.TilePane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.ResourceBundle;
 
-public class MusicPlayerController implements EventHandler<Event> {
+
+public class MusicPlayerController implements Initializable {
+    private static int songNo = 1;
+    private static HashMap<Integer, MediaPlayer> mediaPlayersMap = new HashMap<>();
     @FXML
-    Button playPause;
+    public Label songName;
     @FXML
-    public static ArrayList<TilePane> songWindows = new ArrayList<>();
-
-    private static final MediaView mediaView = new MediaView();
-    private static final File Songs = new File("@resources//Songs");
-    private static final ArrayList<File> songs = new ArrayList<>(Arrays.asList(Songs.listFiles()));
-    private static String song = new File("@"+"").toURI().toString();
-
+    public Button previousSong;
     @FXML
-    public static HashMap<ArrayList<File>, ArrayList<TilePane>> tiles = new HashMap<>();
+    public Button nextSong;
+    @FXML
+    public ImageView songIcon;
 
-    public static void addSongs(){
-        tiles.put(songs, songWindows);
-    }
-
-    private static String musicPlayerStatus = "stop";
-    protected static MediaPlayer Piece = new MediaPlayer(new Media(song));
-
-    @Override
-    public void handle(Event event) {
-        if (musicPlayerStatus.equals("stop")){
-            song = new File(songs.get(x).getPath()).toURI().toString();
-            Piece = new MediaPlayer(new Media(song));
-            Piece.play();
+    public void playPauseLogic() {
+        System.out.println("reached");
+        if (mediaPlayersMap.get(songNo).getStatus().equals(MediaPlayer.Status.UNKNOWN)) {
+            System.out.println("A");
+            mediaPlayersMap.get(songNo).play();
+            System.out.println(mediaPlayersMap.get(songNo).getStatus());
+        } else if (mediaPlayersMap.get(songNo).getStatus().equals(MediaPlayer.Status.PLAYING)) {
+            System.out.println("B");
+            mediaPlayersMap.get(songNo).pause();
+        } else if (mediaPlayersMap.get(songNo).getStatus().equals(MediaPlayer.Status.PAUSED)) {
+            System.out.println("C");
+            mediaPlayersMap.get(songNo).play();
         }
     }
 
-    @Override
-    public void handle(Event event) {
-        clickedID = ((Control) event.getSource()).getId();
-        playPause.setId(clickedID);
-        if (Piece.getStatus().equals(MediaPlayer.Status.READY)) {
-            for (int x = 0; x < playButtons.size(); x++) {
-                if (playButtons.get(x).getId().equals(clickedID)) {
-                    playing.setId(clickedID);
+    public void nextSong() throws SQLException {
+        if (songNo != 3) {
+            ++songNo;
+            handle();
+            ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songNo + ";");
+            while (rs.next()) {
+                File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
+                String imagePath = new File(file.getPath()).toURI().toString();
+                Image image = new Image(imagePath);
+                songIcon.setImage(image);
+                songName.setText(rs.getString(2));
+                System.out.println(rs.getString(2));
+            }
+        }
+    }
 
-                    slider();
-                    System.out.println("Music Played!");
-                    Image pauseImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Pause.png");
-                    ImageView pauseV = new ImageView(pauseImage);
-                    if (playButtons.get(x).getId().equals(playing.getId())) {
-                        pauseV.setPreserveRatio(true);
-                        pauseV.fitWidthProperty().bind(playButtons.get(x).widthProperty());
-                        pauseV.fitHeightProperty().bind(playButtons.get(x).heightProperty());
-                        playButtons.get(x).setGraphic(pauseV);
-                    }
-                    break;
-                }
+    public void previousSong() throws SQLException {
+        if (songNo != 1) {
+            --songNo;
+            handle();
+            ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songNo + ";");
+            while (rs.next()) {
+                File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
+                String imagePath = new File(file.getPath()).toURI().toString();
+                Image image = new Image(imagePath);
+                songIcon.setImage(image);
+                songName.setText(rs.getString(2));
+                System.out.println(rs.getString(2));
             }
-        } else if (Piece.getStatus().equals(MediaPlayer.Status.PLAYING)) {
-            if (playing.getId().equals(clickedID)) {
-                Piece.pause();
-                slider();
-                System.out.println("Music Paused!");
-                Image playImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Play.png");
-                ImageView playV = new ImageView(playImage);
-                for (Button playButton : playButtons) {
-                    if (playButton.getId().equals(playing.getId())) {
-                        playV.setPreserveRatio(true);
-                        playV.fitWidthProperty().bind(playButton.widthProperty());
-                        playV.fitHeightProperty().bind(playButton.heightProperty());
-                        playButton.setGraphic(playV);
-                    }
-                }
-            } else {
-                Piece.stop();
-                for (int x = 0; x < playButtons.size(); x++) {
-                    if (playButtons.get(x).getId().equals(clickedID)) {
-                        playing.setId(clickedID);
-                        song = new File(songs.get(x).getPath()).toURI().toString();
-                        Piece = new MediaPlayer(new Media(song));
-                        Piece.play();
-                        slider();
-                        System.out.println("Music Played!");
-                        Image pauseImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Pause.png");
-                        ImageView pauseV = new ImageView(pauseImage);
-                        if (playButtons.get(x).getId().equals(playing.getId())) {
-                            pauseV.setPreserveRatio(true);
-                            pauseV.fitWidthProperty().bind(playButtons.get(x).widthProperty());
-                            pauseV.fitHeightProperty().bind(playButtons.get(x).heightProperty());
-                            playButtons.get(x).setGraphic(pauseV);
-                        }
-                        break;
-                    }
-                }
-            }
-        } else if (Piece.getStatus().equals(MediaPlayer.Status.PAUSED)) {
-            Piece.play();
-            playing.setId(clickedID);
-            slider();
-            System.out.println("Music Played!");
-            Image pauseImage = new Image("D:\\MinorProject\\Piece\\src\\Resources\\Pause.png");
-            ImageView pauseV = new ImageView(pauseImage);
-            for (Button playButton : playButtons) {
-                if (playButton.getId().equals(playing.getId())) {
-                    pauseV.setPreserveRatio(true);
-                    pauseV.fitWidthProperty().bind(playButton.widthProperty());
-                    pauseV.fitHeightProperty().bind(playButton.heightProperty());
-                    playButton.setGraphic(pauseV);
-                }
+        }
+    }
+
+    public void handle() throws SQLException {
+        ResultSet resultSet = Utilities.connection.createStatement().executeQuery("SELECT song_file FROM songs WHERE song_id =" + songNo + ";");
+        if (!mediaPlayersMap.containsKey(songNo)) {
+            while (resultSet.next()) {
+                File file = new File("src//main//resources//com//piece//v1//Songs//" + resultSet.getString(1));
+                String song = new File(file.getPath()).toURI().toString();
+                Media media = new Media(song);
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                mediaPlayersMap.put(songNo, mediaPlayer);
+                playPauseLogic();
             }
         }
 
-
+        playPauseLogic();
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+    }
 }
