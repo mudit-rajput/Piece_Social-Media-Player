@@ -29,7 +29,7 @@ public class MusicPlayerController implements Initializable {
     @FXML
     public ImageView songIcon;
 
-    public void playPauseLogic() {
+    private void playPauseLogic() {
         System.out.println("reached");
         if (mediaPlayersMap.get(songNo).getStatus().equals(MediaPlayer.Status.UNKNOWN)) {
             System.out.println("A");
@@ -38,16 +38,18 @@ public class MusicPlayerController implements Initializable {
         } else if (mediaPlayersMap.get(songNo).getStatus().equals(MediaPlayer.Status.PLAYING)) {
             System.out.println("B");
             mediaPlayersMap.get(songNo).pause();
+            System.out.println(mediaPlayersMap.get(songNo).getStatus());
         } else if (mediaPlayersMap.get(songNo).getStatus().equals(MediaPlayer.Status.PAUSED)) {
             System.out.println("C");
             mediaPlayersMap.get(songNo).play();
+            System.out.println(mediaPlayersMap.get(songNo).getStatus());
         }
     }
 
     public void nextSong() throws SQLException {
         if (songNo != 3) {
             ++songNo;
-            handle();
+            //        handle();
             ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songNo + ";");
             while (rs.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
@@ -63,7 +65,7 @@ public class MusicPlayerController implements Initializable {
     public void previousSong() throws SQLException {
         if (songNo != 1) {
             --songNo;
-            handle();
+            //     handle();
             ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songNo + ";");
             while (rs.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
