@@ -17,9 +17,6 @@ public class HomeController{
 
     @FXML
     public static Button playing = new Button();
-
-    private static final File Images = new File("D://MinorProject//Piece//src//Resources//Images");
-    private static final ArrayList<File> images = new ArrayList<File>(Arrays.asList(Images.listFiles()));
     private static final ArrayList<Button> playButtons = new ArrayList<>();
     private static final ArrayList<Slider> sliders = new ArrayList<>();
     private static final ArrayList<Label> durations = new ArrayList<>();

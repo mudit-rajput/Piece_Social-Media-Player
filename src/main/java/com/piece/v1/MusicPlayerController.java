@@ -14,6 +14,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 
@@ -49,7 +51,7 @@ public class MusicPlayerController implements Initializable {
     public void nextSong() throws SQLException {
         if (songNo != 3) {
             ++songNo;
-            //        handle();
+            resetPlayers();
             ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songNo + ";");
             while (rs.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
@@ -65,7 +67,7 @@ public class MusicPlayerController implements Initializable {
     public void previousSong() throws SQLException {
         if (songNo != 1) {
             --songNo;
-            //     handle();
+            resetPlayers();
             ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songNo + ";");
             while (rs.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
@@ -90,8 +92,14 @@ public class MusicPlayerController implements Initializable {
                 playPauseLogic();
             }
         }
-
         playPauseLogic();
+    }
+
+    private void resetPlayers() {
+        mediaPlayersMap.entrySet();
+        for (var entry : mediaPlayersMap.entrySet()) {
+            mediaPlayersMap.get(entry).setStartTime(mediaPlayersMap.get(entry).getStartTime());
+        }
     }
 
     @Override
