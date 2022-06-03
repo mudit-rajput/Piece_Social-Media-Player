@@ -12,6 +12,10 @@ import java.util.Objects;
 public class NewUserController {
 
     @FXML
+    private final Utilities u = new Utilities();
+    @FXML
+    private final BaseController home = new BaseController();
+    @FXML
     private TextField newName;
     @FXML
     private TextField newUid;
@@ -19,10 +23,6 @@ public class NewUserController {
     private TextField newPwd;
     @FXML
     private TextField confirmPwd;
-    @FXML
-    private final Utilities u = new Utilities();
-    @FXML
-    private final BaseController home = new BaseController();
 
     @FXML
     protected void newUserPage() throws Exception {

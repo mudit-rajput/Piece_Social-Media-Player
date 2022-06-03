@@ -13,11 +13,9 @@ public class BaseController {
     @FXML
     public Button homeB;
     @FXML
-    public Button aboutUsB;
+    public Button aboutB;
     @FXML
     public Button chatB;
-
-    HomeController home = new HomeController();
 
     @FXML
     public void homeButton() throws Exception {
@@ -32,14 +30,18 @@ public class BaseController {
         System.out.println("Chat screen invoked!");
     } //Takes user to the ABOUT US screen.
 
-    public void aboutUsButton() throws Exception {
-        Parent root = FXMLLoader.load(Main.class.getResource("AboutUs.fxml"));
+    public void aboutButton() throws Exception {
+        Parent root = FXMLLoader.load(Main.class.getResource("About.fxml"));
         Utilities.stage(root, Utilities.stage2, 1280, 800);
-        System.out.println("Chat screen invoked!");
-    } //Takes user to the ABOUT US screen.
+        System.out.println("About screen invoked!");
+    } //Takes user to the ABOUT screen.
 
     public void logoutButton() throws Exception {
-        //HomeController.Piece.stop();
+        for (Integer songId : MusicPlayerController.mediaPlayersMap.keySet()) {
+            MusicPlayerController.mediaPlayersMap.get(MusicPlayerController.songId).stop();
+            MusicPlayerController.mediaPlayersMap.get(MusicPlayerController.songId).dispose();
+        }
+        MusicPlayerController.mediaPlayersMap.clear();
         Utilities.stage2.close();
         Utilities.stage1.close();
         System.out.println("User Logged out");

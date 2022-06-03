@@ -9,6 +9,12 @@ import java.sql.ResultSet;
 public class LoginController {
 
     @FXML
+    private final HomeController home = new HomeController();
+    @FXML
+    private final NewUserController newUser = new NewUserController();
+    @FXML
+    private final Utilities u = new Utilities();
+    @FXML
     public Button loginB;
     @FXML
     public CheckBox showPwd;
@@ -20,12 +26,6 @@ public class LoginController {
     public TextField uid;
     @FXML
     public PasswordField pwd;
-    @FXML
-    private final HomeController home = new HomeController();
-    @FXML
-    private final NewUserController newUser = new NewUserController();
-    @FXML
-    private final Utilities u = new Utilities();
 
     @FXML
     public void loginSystem() throws Exception {
@@ -47,7 +47,6 @@ public class LoginController {
                     Utilities.stage1.close();
                     home.homePage();
                     System.out.println("Login Successful!");
-
                     break;
                 } else {
                     System.out.println("Incorrect Password!");

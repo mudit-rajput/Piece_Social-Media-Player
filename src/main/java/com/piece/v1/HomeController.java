@@ -4,52 +4,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 
-import java.io.File;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class HomeController{
+public class HomeController {
 
-    @FXML
-    public static Button playing = new Button();
-    private static final ArrayList<Button> playButtons = new ArrayList<>();
     private static final ArrayList<Slider> sliders = new ArrayList<>();
     private static final ArrayList<Label> durations = new ArrayList<>();
-    @FXML
-    public Button likeB1;
-    @FXML
-    public Button likeB2;
-    @FXML
-    public Button likeB3;
-    @FXML
-    public Button play1;
-    @FXML
-    public Button play2;
-    @FXML
-    public Button play3;
-    @FXML
-    public Label duration1;
-    @FXML
-    public Label duration2;
-    @FXML
-    public Label duration3;
+
     @FXML
     public Slider s1;
-    @FXML
-    public Slider s2;
-    @FXML
-    public Slider s3;
-    @FXML
-    public Label lb1;
-    @FXML
-    public Label lb2;
-    @FXML
-    public Label lb3;
     private int j = 0;
 
     public static String getTimeString(double millis) {
@@ -78,9 +44,10 @@ public class HomeController{
         alert.setContentText(Utilities.Name);
         alert.setHeaderText("Welcome");
         alert.show();
-    } //Transition from LOGIN screen to HOME Screen.
+    }
+}//Transition from LOGIN screen to HOME Screen.
 
-
+/*
     public void social() throws Exception {
         Statement stmt = Utilities.connection.createStatement();
 
@@ -96,41 +63,6 @@ public class HomeController{
         }
 
     }
-/*
-    public void slider() {
-        for (int x = 0; x < playButtons.size(); x++) {
-            if (playButtons.get(x).getId().equals(playing.getId())) {
-                Double time = Piece.getTotalDuration().toSeconds();
-                sliders.get(x).maxProperty().bind(Bindings.createDoubleBinding(
-                        () -> time,
-                        Piece.totalDurationProperty()));
-
-                int finalX = x;
-                Piece.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-                    sliders.get(finalX).setValue(newValue.toSeconds());
-                });
-                int finalX1 = x;
-                int finalX2 = x;
-                int finalX5 = x;
-                Piece.currentTimeProperty().addListener(ov -> {
-                    if (!sliders.get(finalX1).isValueChanging()) {
-                        double total = Piece.getTotalDuration().toMillis();
-                        double current = Piece.getCurrentTime().toMillis();
-                        sliders.get(finalX2).setValue(current);
-                        durations.get(finalX5).setText(getTimeString(current) + "/" + getTimeString(total));
-                    }
-                });
-                int finalX3 = x;
-                int finalX4 = x;
-                sliders.get(x).valueProperty().addListener(ov -> {
-                    if (sliders.get(finalX3).isValueChanging()) {
-                        Piece.seek(new Duration(sliders.get(finalX4).getValue()));
-                    }
-                });
-            }
-        }
-    }
-
     public void refreshButton() throws SQLException {
         Statement id = Utilities.connection.createStatement();
         Statement name = Utilities.connection.createStatement();
@@ -147,6 +79,7 @@ public class HomeController{
         lb1.setText(Utilities.likedBy);
     }
 
-}*/
+}
 }
 
+ */
