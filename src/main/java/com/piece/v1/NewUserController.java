@@ -49,7 +49,7 @@ public class NewUserController {
 
         if (flag != 1) {
             while (rs.next()) {
-                u.users.add(rs.getString(2));
+                u.users.add(rs.getString(1));
                 if (newUid.getText().equals(u.users.get(i))) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setHeaderText("User ID already exists, Try a new one");
@@ -64,7 +64,7 @@ public class NewUserController {
 
         if (flag != 1) {
             if (newPwd.getText().equals(confirmPwd.getText())) {
-                String query = "INSERT INTO USERS(NAME,USERID,PASSWORD) VALUES('" + newName.getText() + "','" + newUid.getText() + "','" + newPwd.getText() + "')";
+                String query = "INSERT INTO USERS(user_name,user_id,password) VALUES('" + newName.getText() + "','" + newUid.getText() + "','" + newPwd.getText() + "')";
                 Utilities.connection.createStatement().executeUpdate(query);
                 Alert created = new Alert(Alert.AlertType.INFORMATION);
                 created.setHeaderText("User Created");

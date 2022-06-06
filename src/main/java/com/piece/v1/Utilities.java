@@ -15,9 +15,8 @@ public class Utilities {
     static private final String rootUser = "root";
     static private final String password = "1234";
     static public Connection connection;
-    public static String likedBy = "Liked by ";
     protected static String Name;
-    protected static int userID;
+    protected static int userId;
     protected static Stage stage1 = new Stage();
     protected static Stage stage2 = new Stage();
     protected ArrayList<String> users = new ArrayList<>();

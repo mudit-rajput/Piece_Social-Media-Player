@@ -1,8 +1,6 @@
 package com.piece.v1;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import lombok.SneakyThrows;
 
 import java.io.File;
 import java.net.URL;
@@ -91,6 +90,8 @@ public class MusicPlayerController implements Initializable {
 
     public void nextSong() throws SQLException {
         if (songId != 3) {
+            LikeButtonController likeButtonController = new LikeButtonController();
+            likeButtonController.countAndShowNames();
             ++songId;
             resetPlayers();
             ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songId + ";");
@@ -107,6 +108,8 @@ public class MusicPlayerController implements Initializable {
 
     public void previousSong() throws SQLException {
         if (songId != 1) {
+            LikeButtonController likeButtonController = new LikeButtonController();
+            likeButtonController.countAndShowNames();
             --songId;
             resetPlayers();
             ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songId + ";");
@@ -158,14 +161,16 @@ public class MusicPlayerController implements Initializable {
     }
 
 
+    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (mediaPlayersMap.isEmpty()) {
-            File file = new File("src//main//resources//com//piece//v1//Songs//DieForYou.wav");
+        ResultSet resultSet = Utilities.connection.createStatement().executeQuery("SELECT song_id, song_file FROM songs;");
+        while (resultSet.next()) {
+            File file = new File("src//main//resources//com//piece//v1//Songs//" + resultSet.getString(2));
             String song = new File(file.getPath()).toURI().toString();
             Media media = new Media(song);
             MediaPlayer mediaPlayer = new MediaPlayer(media);
-            mediaPlayersMap.put(songId, mediaPlayer);
+            mediaPlayersMap.put(resultSet.getInt(1), mediaPlayer);
         }
 
         mediaPlayersMap.get(songId).currentTimeProperty().addListener(ov -> {

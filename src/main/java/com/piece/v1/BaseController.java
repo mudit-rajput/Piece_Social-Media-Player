@@ -48,6 +48,7 @@ public class BaseController {
         Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
         Utilities.stage1.setTitle("Piece");
         Utilities.stage(root, Utilities.stage1, 500, 300);
+        LikeButtonController.names.clear();
     } //Logs user out by changing screen from HOME to LOGIN.
 
 }

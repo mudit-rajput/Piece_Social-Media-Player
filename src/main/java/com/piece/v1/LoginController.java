@@ -33,14 +33,15 @@ public class LoginController {
         int i = 0;
         int flag = 0;
 
-        ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT * FROM USERS");
+        ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT * FROM users");
         while (rs.next()) {
-            u.users.add(rs.getString(2));
+            u.users.add(rs.getString(1));
             u.passwords.add(rs.getString(3));
             if (uid.getText().equals(u.users.get(i))) {
                 System.out.println("User found @ row" + (i + 1));
-                Utilities.Name = rs.getString(1);
-                Utilities.userID = rs.getInt(2);
+                Utilities.Name = rs.getString(2);
+                Utilities.userId = rs.getInt(1);
+                System.out.println("User ID: " + Utilities.userId);
                 System.out.println("User Name is: " + Utilities.Name);
                 if (pwd.getText().equals(u.passwords.get(i))) {
                     flag = 1;
