@@ -15,15 +15,22 @@ import lombok.SneakyThrows;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
 
 public class MusicPlayerController implements Initializable {
     public static final HashMap<Integer, MediaPlayer> mediaPlayersMap = new HashMap<>();
-    public static int songId = 1;
+    public static Integer musicId = 1;
+    public static HashMap<Integer, ArrayList<String>> namesMap = new HashMap<>();
+    @FXML
+    public Button likeButton;
+    @FXML
+    public Label likedByLabel;
     @FXML
     public Label songName;
     @FXML
@@ -59,20 +66,29 @@ public class MusicPlayerController implements Initializable {
         return "0" + t;
     }
 
+    public void likedOrNot() throws SQLException {
+        ResultSet likedOrNot = Utilities.connection.createStatement().executeQuery("SELECT * FROM social WHERE music_id=" + musicId + " AND user_id=" + Utilities.userId + ";");
+        if (likedOrNot.next()) {
+            likeButton.setText("Liked");
+        } else {
+            likeButton.setText("Like");
+        }
+    }
+
     private void playPauseLogic() {
-        System.out.println("reached playPauseLogic and current media player's status is: " + mediaPlayersMap.get(songId).getStatus());
-        if (mediaPlayersMap.get(songId).getStatus().equals(MediaPlayer.Status.STOPPED) || mediaPlayersMap.get(songId).getStatus().equals(MediaPlayer.Status.PAUSED) || mediaPlayersMap.get(songId).getStatus().equals(MediaPlayer.Status.READY)) {
+        System.out.println("reached playPauseLogic and current media player's status is: " + mediaPlayersMap.get(musicId).getStatus());
+        if (mediaPlayersMap.get(musicId).getStatus().equals(MediaPlayer.Status.STOPPED) || mediaPlayersMap.get(musicId).getStatus().equals(MediaPlayer.Status.PAUSED) || mediaPlayersMap.get(musicId).getStatus().equals(MediaPlayer.Status.READY)) {
             System.out.println("Playing now!");
             changePlayPauseImage("Playing");
-            mediaPlayersMap.get(songId).play();
+            mediaPlayersMap.get(musicId).play();
             bindTimeStamp();
-            System.out.println("status after playing: " + mediaPlayersMap.get(songId).getStatus());
-        } else if (mediaPlayersMap.get(songId).getStatus().equals(MediaPlayer.Status.PLAYING)) {
+            System.out.println("status after playing: " + mediaPlayersMap.get(musicId).getStatus());
+        } else if (mediaPlayersMap.get(musicId).getStatus().equals(MediaPlayer.Status.PLAYING)) {
             System.out.println("Paused now!");
             changePlayPauseImage("Paused");
-            mediaPlayersMap.get(songId).pause();
+            mediaPlayersMap.get(musicId).pause();
             bindTimeStamp();
-            System.out.println("status after pausing: " + mediaPlayersMap.get(songId).getStatus());
+            System.out.println("status after pausing: " + mediaPlayersMap.get(musicId).getStatus());
         }
     }
 
@@ -89,12 +105,12 @@ public class MusicPlayerController implements Initializable {
     }
 
     public void nextSong() throws SQLException {
-        if (songId != 3) {
-            LikeButtonController likeButtonController = new LikeButtonController();
-            likeButtonController.countAndShowNames();
-            ++songId;
+        if (musicId != 3) {
+            ++musicId;
+            likedOrNot();
             resetPlayers();
-            ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songId + ";");
+            updateLabel();
+            ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + musicId + ";");
             while (rs.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
                 String imagePath = new File(file.getPath()).toURI().toString();
@@ -107,12 +123,12 @@ public class MusicPlayerController implements Initializable {
     }
 
     public void previousSong() throws SQLException {
-        if (songId != 1) {
-            LikeButtonController likeButtonController = new LikeButtonController();
-            likeButtonController.countAndShowNames();
-            --songId;
+        if (musicId != 1) {
+            --musicId;
             resetPlayers();
-            ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + songId + ";");
+            updateLabel();
+            likedOrNot();
+            ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + musicId + ";");
             while (rs.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
                 String imagePath = new File(file.getPath()).toURI().toString();
@@ -124,9 +140,9 @@ public class MusicPlayerController implements Initializable {
         }
     }
 
-    public void handle() throws SQLException {
-        ResultSet resultSet = Utilities.connection.createStatement().executeQuery("SELECT song_file FROM songs WHERE song_id =" + songId + ";");
-        if (!mediaPlayersMap.containsKey(songId)) {
+    public void handlePlayButton() throws SQLException {
+        ResultSet resultSet = Utilities.connection.createStatement().executeQuery("SELECT song_file FROM songs WHERE song_id =" + musicId + ";");
+        if (!mediaPlayersMap.containsKey(musicId)) {
             while (resultSet.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Songs//" + resultSet.getString(1));
                 String song = new File(file.getPath()).toURI().toString();
@@ -138,7 +154,7 @@ public class MusicPlayerController implements Initializable {
                     Image image = new Image(imagePath);
                     playPauseImage.setImage(image);
                 }
-                mediaPlayersMap.put(songId, mediaPlayer);
+                mediaPlayersMap.put(musicId, mediaPlayer);
                 playPauseLogic();
             }
         } else {
@@ -147,10 +163,10 @@ public class MusicPlayerController implements Initializable {
     }
 
     private void bindTimeStamp() {
-        timeStamp.setText(getTimeString(mediaPlayersMap.get(songId).getCurrentTime().toMillis()) + "/" + getTimeString(mediaPlayersMap.get(songId).getTotalDuration().toMillis()));
+        timeStamp.setText(getTimeString(mediaPlayersMap.get(musicId).getCurrentTime().toMillis()) + "/" + getTimeString(mediaPlayersMap.get(musicId).getTotalDuration().toMillis()));
         slider.maxProperty().bind(Bindings.createDoubleBinding(
-                () -> mediaPlayersMap.get(songId).getTotalDuration().toSeconds(),
-                mediaPlayersMap.get(songId).totalDurationProperty()));
+                () -> mediaPlayersMap.get(musicId).getTotalDuration().toSeconds(),
+                mediaPlayersMap.get(musicId).totalDurationProperty()));
     }
 
     private void resetPlayers() {
@@ -160,6 +176,43 @@ public class MusicPlayerController implements Initializable {
         }
     }
 
+    public void handleLikeButton() throws SQLException {
+        ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT * FROM social WHERE music_id=" + musicId + " AND user_id=" + Utilities.userId + ";");
+        if (!rs.next()) {
+            String sql = "INSERT INTO social (music_id, user_id)" + "VALUES (?,?)";
+            PreparedStatement preparedStatement = Utilities.connection.prepareStatement(sql);
+            preparedStatement.setInt(1, musicId);
+            preparedStatement.setInt(2, Utilities.userId);
+            preparedStatement.executeUpdate();
+            namesMap.get(musicId).add(Utilities.Name);
+            suggestFriends();
+            likedOrNot();
+            updateLabel();
+        } else {
+            likeButton.setText("Like");
+            String sql = "DELETE FROM social WHERE music_id = " + "'" + musicId + "'" + "AND user_id = " + "'" + Utilities.userId + "'";
+            PreparedStatement preparedStatement = Utilities.connection.prepareStatement(sql);
+            preparedStatement.executeUpdate();
+            namesMap.get(musicId).remove(Utilities.Name);
+            likedOrNot();
+            updateLabel();
+        }
+    }
+
+    public void updateLabel() {
+        String likedByNames = "";
+        for (String name : namesMap.get(musicId)) {
+            if (name.equals(Utilities.Name)) {
+                name = "Me";
+            }
+            likedByNames = likedByNames + name + ", ";
+        }
+        likedByLabel.setText(likedByNames);
+    }
+
+    public void suggestFriends(){
+
+    }
 
     @SneakyThrows
     @Override
@@ -173,19 +226,33 @@ public class MusicPlayerController implements Initializable {
             mediaPlayersMap.put(resultSet.getInt(1), mediaPlayer);
         }
 
-        mediaPlayersMap.get(songId).currentTimeProperty().addListener(ov -> {
-            double total = mediaPlayersMap.get(songId).getTotalDuration().toMillis();
-            double current = mediaPlayersMap.get(songId).getCurrentTime().toMillis();
+        mediaPlayersMap.get(musicId).currentTimeProperty().addListener(ov -> {
+            double total = mediaPlayersMap.get(musicId).getTotalDuration().toMillis();
+            double current = mediaPlayersMap.get(musicId).getCurrentTime().toMillis();
             timeStamp.setText(getTimeString(current) + "/" + getTimeString(total));
         });
 
         slider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            mediaPlayersMap.get(songId).seek(Duration.seconds(newValue.doubleValue()));
-            double total = mediaPlayersMap.get(songId).getTotalDuration().toMillis();
-            double current = mediaPlayersMap.get(songId).getCurrentTime().toMillis();
+            mediaPlayersMap.get(musicId).seek(Duration.seconds(newValue.doubleValue()));
+            double total = mediaPlayersMap.get(musicId).getTotalDuration().toMillis();
+            double current = mediaPlayersMap.get(musicId).getCurrentTime().toMillis();
             timeStamp.setText(getTimeString(current) + "/" + getTimeString(total));
         });
 
+        ResultSet countOfSongs = Utilities.connection.createStatement().executeQuery("SELECT COUNT(DISTINCT song_id) FROM songs;");
+        while (countOfSongs.next()) {
+            Integer songsCount = countOfSongs.getInt(1);
+            for (Integer i = 1; i <= songsCount; i++) {
+                ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT user_name FROM users WHERE user_id IN (SELECT user_id FROM social WHERE music_id=" + i + ");");
+                ArrayList<String> names = new ArrayList<>();
+                while (rs.next()) {
+                    names.add(rs.getString(1));
+                }
+                namesMap.put(i, names);
+            }
+        }
+        updateLabel();
+        likedOrNot();
     }
 
 }
