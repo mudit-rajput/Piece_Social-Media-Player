@@ -10,7 +10,7 @@
         <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="84.0" style="-fx-background-color: #191414;" text="Send" textFill="#b2b2b2" HBox.hgrow="NEVER" />
     </HBox>
     <VBox layoutX="4.0" layoutY="153.0" prefHeight="632.0" prefWidth="292.0" spacing="3.0" style="-fx-background-color: #323131; -fx-border-color: #191414;">
-        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="56.0" prefWidth="300.0" style="-fx-background-color: #191414; -fx-border-color: #191414;" text="Friends" textFill="#b2b2b2">
+        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="56.0" prefWidth="300.0" style="-fx-background-color: #191414; -fx-border-color: #191414;" text="Friends" textFill="#d4ff00">
             <font>
                 <Font name="Agency FB" size="40.0" />
             </font>

@@ -2,11 +2,16 @@ package com.piece.v1;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
-public class BaseController {
+public class BaseController implements Initializable {
 
     @FXML
     public Button logoutB;
@@ -16,6 +21,8 @@ public class BaseController {
     public Button aboutB;
     @FXML
     public Button chatB;
+    @FXML
+    public Label welcomeLabel;
 
     @FXML
     public void homeButton() throws Exception {
@@ -49,4 +56,9 @@ public class BaseController {
         Utilities.stage1.setTitle("Piece");
         Utilities.stage(root, Utilities.stage1, 500, 300);
     } //Logs user out by changing screen from HOME to LOGIN.
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        welcomeLabel.setText("Welcome to Piece, " + Utilities.Name);
+    }
 }

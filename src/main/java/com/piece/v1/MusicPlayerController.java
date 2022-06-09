@@ -28,6 +28,8 @@ public class MusicPlayerController implements Initializable {
     public static Integer musicId = 1;
     public static HashMap<Integer, ArrayList<String>> namesMap = new HashMap<>();
     @FXML
+    public Label suggestionLabel;
+    @FXML
     public Button likeButton;
     @FXML
     public Label likedByLabel;
@@ -47,6 +49,7 @@ public class MusicPlayerController implements Initializable {
     public Slider slider;
     @FXML
     public Label timeStamp;
+    String likedByNames = "";
 
     public static String getTimeString(double millis) {
         millis /= 1000;
@@ -107,9 +110,10 @@ public class MusicPlayerController implements Initializable {
     public void nextSong() throws SQLException {
         if (musicId != 3) {
             ++musicId;
-            likedOrNot();
             resetPlayers();
+            likedOrNot();
             updateLabel();
+            suggestionLabel.setText("");
             ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + musicId + ";");
             while (rs.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
@@ -126,8 +130,9 @@ public class MusicPlayerController implements Initializable {
         if (musicId != 1) {
             --musicId;
             resetPlayers();
-            updateLabel();
             likedOrNot();
+            updateLabel();
+            suggestionLabel.setText("");
             ResultSet rs = Utilities.connection.createStatement().executeQuery("SELECT song_icon, song_name FROM songs WHERE song_id =" + musicId + ";");
             while (rs.next()) {
                 File file = new File("src//main//resources//com//piece//v1//Images//" + rs.getString(1));
@@ -185,9 +190,9 @@ public class MusicPlayerController implements Initializable {
             preparedStatement.setInt(2, Utilities.userId);
             preparedStatement.executeUpdate();
             namesMap.get(musicId).add(Utilities.Name);
-            suggestFriends();
             likedOrNot();
             updateLabel();
+            suggestFriends();
         } else {
             likeButton.setText("Like");
             String sql = "DELETE FROM social WHERE music_id = " + "'" + musicId + "'" + "AND user_id = " + "'" + Utilities.userId + "'";
@@ -196,11 +201,12 @@ public class MusicPlayerController implements Initializable {
             namesMap.get(musicId).remove(Utilities.Name);
             likedOrNot();
             updateLabel();
+            suggestionLabel.setText("");
         }
     }
 
     public void updateLabel() {
-        String likedByNames = "";
+        likedByNames = "";
         for (String name : namesMap.get(musicId)) {
             if (name.equals(Utilities.Name)) {
                 name = "Me";
@@ -210,8 +216,18 @@ public class MusicPlayerController implements Initializable {
         likedByLabel.setText(likedByNames);
     }
 
-    public void suggestFriends(){
-
+    public void suggestFriends() {
+        String namesOfLikes = "You may want to follow:";
+        String[] substrings = likedByNames.split(", ");
+        for (String string : substrings) {
+            if (!string.equals("Me"))
+                namesOfLikes = namesOfLikes + "\n" + string;
+        }
+        if (namesOfLikes.equals("You may want to follow:")) {
+            suggestionLabel.setText("Only you like this song :)");
+        } else {
+            suggestionLabel.setText(namesOfLikes);
+        }
     }
 
     @SneakyThrows

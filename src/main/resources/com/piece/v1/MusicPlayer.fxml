@@ -100,4 +100,9 @@
             </HBox.margin>
         </Label>
     </HBox>
+   <Label fx:id="suggestionLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="671.0" layoutY="156.0" prefHeight="126.0" prefWidth="329.0" textAlignment="CENTER" textFill="#b2b2b2" wrapText="true">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font>
+   </Label>
 </Pane>
